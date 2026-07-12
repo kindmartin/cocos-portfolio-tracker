@@ -1,0 +1,82 @@
+# Entorno virtual
+.venv/
+venv/
+env/
+
+# Base de datos (datos personales — cada usuario trae la suya)
+data/db/*.duckdb
+data/db/*.duckdb.wal
+data/db/backups/
+
+# CSVs con datos personales
+data/processed csv/snapshots/
+data/processed csv/transactions/
+data/processed csv/recreated_csv/
+data/ingest_logs/
+data/ingest_errors/
+csv for ingest/
+
+# Logs
+*.log
+ingest_monitor.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Build / distribución
+build/
+dist/
+*.spec
+*.egg-info/
+
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos temporales de desarrollo
+tmp_*.py
+temp_*.py
+_fix_*.py
+
+# Carpeta de auditoría con datos personales (Excel, pickles, txts con datos)
+check/
+check_*.py
+compare_*.py
+list_all_snapshots.py
+prep_reingest.py
+print_*.py
+search_*.py
+reorganize_folders.py
+restore_from_bkp.py
+rename_folders.bat
+
+# Backups de base de datos con datos personales
+data/*.duckdb
+data/portfolio_bkp.duckdb
+data/processed csv/*.zip
+
+# Archivos de trabajo internos
+code/*.bak
+code/audit_*.py
+code/recreate_*.py
+code/reingest_*.py
+code/restore_sectors_from_json.py
+code/migrate_sectors.py
+code/compare_dbs.py
+code/check_db.py
+
+# journal de desarrollo (privado)
+journal.md
+
+# Workspace de VSCode con rutas locales
+*.code-workspace

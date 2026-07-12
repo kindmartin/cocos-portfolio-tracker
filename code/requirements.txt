@@ -1,0 +1,8 @@
+duckdb>=1.0.0
+pandas>=2.2.0
+dash>=2.18.0
+plotly>=6.0.0
+flask>=3.0.0
+
+# Opcional: solo si vas a generar el .exe con PyInstaller
+pyinstaller>=6.0.0
