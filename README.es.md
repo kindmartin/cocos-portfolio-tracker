@@ -73,15 +73,65 @@ Abrir el navegador en **http://localhost:8050**
 
 ## Cómo cargar tus datos
 
-1. Exportá los reportes de posición y el historial de movimientos desde COCOS
-2. Copiá los archivos CSV a la carpeta `csv for ingest/`
-3. Hacé click en **"Actualizar datos desde csv for ingest/"** en el dashboard, o ejecutá:
+### Paso 1 — Descargar los CSVs desde COCOS
 
+La app trabaja con dos tipos de archivos que exportás manualmente desde [cocos.capital](https://cocos.capital):
+
+#### Reporte de posiciones (snapshot)
+Muestra el valor de cada instrumento en una fecha determinada.
+
+1. Iniciá sesión en **[app.cocos.capital/capital-portfolio](https://app.cocos.capital/capital-portfolio)**
+2. En el panel de Portfolio, hacer click en el botón **"Descargar Portfolio"** (arriba a la derecha)
+3. El archivo se descarga con el nombre: `portfolio_report_YYYYMMDD.csv`
+
+![Descargar Portfolio desde COCOS](docs/screenshots/cocos_portfolio_download.jpg)
+
+> Hacé esto periódicamente (semanal o mensualmente) para tener historial de evolución del portfolio.
+
+#### Movimientos de cuenta (transacciones)
+Compras, ventas, depósitos, retiros y otros movimientos.
+
+1. Iniciá sesión y ir a **[app.cocos.capital/movements](https://app.cocos.capital/movements)**
+2. Seleccioná la moneda (ARS, US$, etc.) y filtrá el período si querés
+3. Hacer click en **"Descargar movimientos"** (arriba a la derecha)
+4. El archivo se descarga con el nombre: `movimientos_cuenta YYYY.csv`
+
+![Descargar Movimientos desde COCOS](docs/screenshots/cocos_movements_download.jpg)
+
+---
+
+### Paso 2 — Copiar los archivos a la carpeta de ingestión
+
+Copiá los archivos descargados a:
+
+```
+cocos-portfolio-tracker/
+└── csv for ingest/          ← acá van los CSVs
+```
+
+La app acepta ambos tipos en la misma carpeta al mismo tiempo — detecta automáticamente de qué tipo es cada uno por sus columnas.
+
+---
+
+### Paso 3 — Procesar
+
+**Opción A — Desde el dashboard:**
+Click en el botón **"Actualizar datos desde csv for ingest/"**
+
+**Opción B — Desde la terminal:**
 ```bash
 python code/etl.py
 ```
 
-El sistema detecta automáticamente si cada archivo es un snapshot de posiciones o un listado de transacciones, lo mueve a la carpeta correcta y lo carga en la base de datos.
+**Opciones útiles:**
+```bash
+python code/etl.py --snapshots      # Solo cargar snapshots
+python code/etl.py --transactions   # Solo cargar movimientos
+python code/etl.py --force          # Forzar recarga aunque ya existan
+python code/etl.py --reset          # Borrar todo y recargar desde cero
+```
+
+Después del procesamiento, los archivos se mueven automáticamente a `data/processed csv/`. Si hay un error, el archivo queda en `data/ingest_errors/` con un archivo `.error` que explica qué falló.
 
 ---
 

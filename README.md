@@ -90,15 +90,65 @@ Open your browser at **http://localhost:8050**
 
 ## Loading your data
 
-1. Export your portfolio snapshots and transaction history from COCOS
-2. Drop the CSV files into the `csv for ingest/` folder
-3. Click **"Actualizar datos desde csv for ingest/"** in the dashboard, or run:
+### Step 1 — Export CSVs from COCOS
 
+The app works with two file types that you export manually from [cocos.capital](https://cocos.capital):
+
+#### Portfolio snapshot
+Shows the value of each instrument on a given date.
+
+1. Log in to **[app.cocos.capital/capital-portfolio](https://app.cocos.capital/capital-portfolio)**
+2. Click the **"Descargar Portfolio"** button (top right)
+3. File downloads as: `portfolio_report_YYYYMMDD.csv`
+
+![Download portfolio from COCOS](docs/screenshots/cocos_portfolio_download.jpg)
+
+> Do this periodically (weekly or monthly) to build a history of your portfolio evolution.
+
+#### Account movements (transactions)
+Purchases, sales, deposits, withdrawals and other movements.
+
+1. Log in and go to **[app.cocos.capital/movements](https://app.cocos.capital/movements)**
+2. Select the currency tab (ARS, US$, etc.) and filter the period if needed
+3. Click **"Descargar movimientos"** (top right)
+4. File downloads as: `movimientos_cuenta YYYY.csv`
+
+![Download movements from COCOS](docs/screenshots/cocos_movements_download.jpg)
+
+---
+
+### Step 2 — Drop the files into the ingest folder
+
+Copy the downloaded files to:
+
+```
+cocos-portfolio-tracker/
+└── csv for ingest/          ← drop CSVs here
+```
+
+Both file types can be placed in the same folder at the same time — the app detects each type automatically from its columns.
+
+---
+
+### Step 3 — Process
+
+**Option A — From the dashboard:**
+Click **"Actualizar datos desde csv for ingest/"**
+
+**Option B — From the terminal:**
 ```bash
 python code/etl.py
 ```
 
-The system auto-detects whether each file is a snapshot or a transaction list, moves it to the correct folder, and loads it into the database.
+**Useful flags:**
+```bash
+python code/etl.py --snapshots      # Only load snapshots
+python code/etl.py --transactions   # Only load transactions
+python code/etl.py --force          # Force reload even if already loaded
+python code/etl.py --reset          # Wipe and reload everything from scratch
+```
+
+After processing, files are moved automatically to `data/processed csv/`. On error, the file stays in `data/ingest_errors/` with a `.error` file explaining what went wrong.
 
 ---
 
