@@ -30,7 +30,6 @@ __pycache__/
 # Build / distribución
 build/
 dist/
-*.spec
 *.egg-info/
 
 # IDEs

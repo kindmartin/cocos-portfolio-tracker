@@ -64,7 +64,8 @@ def _load_sector_map() -> dict:
     except ImportError:
         pass
     # fallback: solo sectors.json
-    path = Path(__file__).parent / "sectors.json"
+    _code_dir = Path(sys._MEIPASS) if getattr(sys, 'frozen', False) else Path(__file__).parent
+    path = _code_dir / "sectors.json"
     if path.exists():
         try:
             data = json.loads(path.read_text(encoding='utf-8'))
