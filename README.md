@@ -1,5 +1,7 @@
 # Cocos Portfolio Tracker
 
+> 🇦🇷 [Versión en español](README.es.md)
+
 Local portfolio management dashboard for COCOS brokerage accounts. Runs entirely on your machine — no cloud, no data sharing.
 
 Built with Python, Dash, Plotly and DuckDB.
