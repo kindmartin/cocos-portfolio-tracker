@@ -4,6 +4,16 @@ Local portfolio management dashboard for COCOS brokerage accounts. Runs entirely
 
 Built with Python, Dash, Plotly and DuckDB.
 
+---
+
+## Why this exists
+
+COCOS Capital provides a solid brokerage platform, but its built-in reporting is limited for portfolio analysis over time. The obvious alternatives — third-party portfolio trackers, broker integrations, or automated data pulls — all require either an API key or OAuth access to your brokerage account. That means granting an external service read (or more) access to your positions, transactions, and account balance.
+
+This project takes a different approach: **you export the CSVs manually from COCOS and drop them into a folder**. The app reads those files, loads them into a local DuckDB database, and serves a full analytics dashboard on your own machine. No API keys. No external connections. No service that could be compromised or change its terms.
+
+Your data never leaves your computer.
+
 ![KPIs Dashboard](docs/screenshots/01_kpis.png)
 
 ---
