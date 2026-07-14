@@ -1,0 +1,115 @@
+{
+  "_description": "Sectores predefinidos para Cocos Portfolio Tracker. 'sectors' y 'assignments' son los valores por defecto para el mercado argentino (COCOS Capital). 'yfinance_global' son los sectores GICS estándar de yfinance para mercados globales — útiles si operás CEDEARs de empresas internacionales.",
+
+  "yfinance_global": {
+    "_description": "Sectores estándar GICS usados por yfinance / S&P para clasificar empresas globalmente",
+    "sectors": [
+      { "name": "Technology",             "color": "#4169e1" },
+      { "name": "Healthcare",             "color": "#2ecc71" },
+      { "name": "Financial Services",     "color": "#1e3a5f" },
+      { "name": "Consumer Cyclical",      "color": "#f39c12" },
+      { "name": "Consumer Defensive",     "color": "#27ae60" },
+      { "name": "Industrials",            "color": "#7f8c8d" },
+      { "name": "Energy",                 "color": "#ff6b6b" },
+      { "name": "Utilities",              "color": "#00d4ff" },
+      { "name": "Real Estate",            "color": "#8B4513" },
+      { "name": "Basic Materials",        "color": "#ffa500" },
+      { "name": "Communication Services", "color": "#fff000" },
+      { "name": "Cash & Equivalents",     "color": "#ff1493" },
+      { "name": "Fixed Income",           "color": "#90ee90" },
+      { "name": "ETF",                    "color": "#c0c0c0" }
+    ],
+    "assignments": {
+      "AAPL":  "Technology",
+      "MSFT":  "Technology",
+      "GOOGL": "Technology",
+      "META":  "Technology",
+      "NVDA":  "Technology",
+      "MSTR":  "Technology",
+      "GLOB":  "Technology",
+      "AMZN":  "Consumer Cyclical",
+      "TSLA":  "Consumer Cyclical",
+      "NIO":   "Consumer Cyclical",
+      "MELI":  "Consumer Cyclical",
+      "JPM":   "Financial Services",
+      "BAC":   "Financial Services",
+      "XOM":   "Energy",
+      "CVX":   "Energy",
+      "SPY":   "ETF",
+      "QQQ":   "ETF",
+      "SPCX":  "ETF"
+    }
+  },
+
+  "sectors": [
+    {
+      "id": 1,
+      "name": "Agro ARG",
+      "color": "#8B4513"
+    },
+    {
+      "id": 2,
+      "name": "Banca ARG",
+      "color": "#1e3a5f"
+    },
+    {
+      "id": 3,
+      "name": "Bonos Soberanos",
+      "color": "#00d4ff"
+    },
+    {
+      "id": 4,
+      "name": "Cash",
+      "color": "#ff1493"
+    },
+    {
+      "id": 5,
+      "name": "ETF USA",
+      "color": "#90ee90"
+    },
+    {
+      "id": 6,
+      "name": "Oil & Gas ARG",
+      "color": "#ff6b6b"
+    },
+    {
+      "id": 7,
+      "name": "Tecnología ARG",
+      "color": "#ffa500"
+    },
+    {
+      "id": 8,
+      "name": "Tecnología USA",
+      "color": "#4169e1"
+    },
+    {
+      "id": 9,
+      "name": "Telecom ARG",
+      "color": "#fff000"
+    }
+  ],
+  "assignments": {
+    "CRES": "Agro ARG",
+    "BBAR": "Banca ARG",
+    "GGAL": "Banca ARG",
+    "AL29": "Bonos Soberanos",
+    "AL30": "Bonos Soberanos",
+    "GD30": "Bonos Soberanos",
+    "ARS": "Cash",
+    "EXT": "Cash",
+    "USD": "Cash",
+    "SPCX": "ETF USA",
+    "SPY": "ETF USA",
+    "PAMP": "Oil & Gas ARG",
+    "TEN": "Oil & Gas ARG",
+    "YPFD": "Oil & Gas ARG",
+    "GLOB": "Tecnología ARG",
+    "MELI": "Tecnología ARG",
+    "AMZN": "Tecnología USA",
+    "GOOGL": "Tecnología USA",
+    "MSTR": "Tecnología USA",
+    "NIO": "Tecnología USA",
+    "TSLA": "Tecnología USA",
+    "TECO2": "Telecom ARG"
+  }
+}

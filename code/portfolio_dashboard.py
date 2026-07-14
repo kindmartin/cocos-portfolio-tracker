@@ -55,6 +55,11 @@ INGEST_DIR = BASE_DIR / "csv for ingest"
 SNAPSHOTS_CSV_DIR = BASE_DIR / "data" / "processed csv" / "snapshots"
 TRANSACTIONS_CSV_DIR = BASE_DIR / "data" / "processed csv" / "transactions"
 
+# Crear estructura de carpetas si no existe (primer arranque desde .exe)
+for _d in [DB_PATH.parent, BACKUP_DIR, INGEST_DIR, SNAPSHOTS_CSV_DIR, TRANSACTIONS_CSV_DIR,
+           BASE_DIR / "data" / "ingest_logs", BASE_DIR / "data" / "ingest_errors"]:
+    _d.mkdir(parents=True, exist_ok=True)
+
 
 def _load_sector_map() -> dict:
     """Carga sectores combinando sectors.json (manual) + sectors_cache.json (yfinance)."""
@@ -132,6 +137,16 @@ def get_db_status() -> str:
             return 'ready' if n > 0 else 'empty'
     except Exception:
         return 'no_db'
+
+
+# Auto-inicializar DB si no existe (primer arranque)
+if not DB_PATH.exists():
+    try:
+        import setup_db as _setup
+        with duckdb.connect(str(DB_PATH)) as _conn:
+            _setup.create_schema(_conn)
+    except Exception:
+        pass
 
 
 def load_returns() -> pd.DataFrame:
@@ -2274,6 +2289,40 @@ def handle_backup_actions(create_clicks, restore_submit_clicks, selected_backup,
     raise PreventUpdate
 
 
+@app.callback(
+    Output('sectors-import-feedback', 'children'),
+    Output('sectors-refresh', 'data', allow_duplicate=True),
+    Input('upload-sectors-json', 'contents'),
+    State('upload-sectors-json', 'filename'),
+    State('sectors-refresh', 'data'),
+    prevent_initial_call=True,
+)
+def import_sectors_from_upload(contents, filename, sectors_refresh):
+    import base64, json, requests as req
+    if not contents:
+        raise PreventUpdate
+    try:
+        _, content_string = contents.split(',')
+        decoded = base64.b64decode(content_string).decode('utf-8')
+        data = json.loads(decoded)
+
+        # Si el JSON tiene formato con clave 'cocos_arg' (sectors_default.json), extraer esa sección
+        if 'cocos_arg' in data:
+            data = data['cocos_arg']
+        elif 'yfinance_global' in data and 'sectors' not in data:
+            data = data['yfinance_global']
+
+        resp = req.post('http://127.0.0.1:8050/api/sectors/import', json=data, timeout=5)
+        result = resp.json()
+        if result.get('success'):
+            msg = f"✓ Importado desde {filename}: {result['added_sectors']} sectores nuevos, {result['added_assignments']} asignaciones."
+            return html.Span(msg, style={'color': GREEN}), (sectors_refresh or 0) + 1
+        else:
+            return html.Span(f"Error: {result.get('error')}", style={'color': RED}), no_update
+    except Exception as e:
+        return html.Span(f"Error al procesar {filename}: {e}", style={'color': RED}), no_update
+
+
 def _tab_perf_vs_spy(base_date: str | None = None):
     """Performance de cada instrumento vs SPY. SPY siempre en 100. Incluye índice MSO."""
     print("[_tab_perf_vs_spy] Starting...")
@@ -2546,6 +2595,47 @@ def _render_sectors_modal_content(context='admin'):
                     for s in sorted(sectors, key=lambda x: x['name'])
                 ], style={'display': 'flex', 'flexDirection': 'column', 'gap': '6px'})
             ], style={'background': CARD_BG, 'padding': '12px', 'borderRadius': '6px', 'border': f'1px solid {GRID}'}),
+
+            # Export / Import JSON
+            html.Div([
+                html.H5('Exportar / Importar Sectores (JSON)', style={'margin': '0 0 12px 0', 'fontSize': '12px', 'color': TEXT, 'fontWeight': '600'}),
+                html.Div([
+                    html.A(
+                        '⬇ Exportar sectores y asignaciones',
+                        href='/api/sectors/export',
+                        download='sectors_export.json',
+                        style={
+                            'padding': '8px 16px',
+                            'background': ACCENT,
+                            'color': '#000',
+                            'borderRadius': '4px',
+                            'fontWeight': '600',
+                            'fontSize': '12px',
+                            'textDecoration': 'none',
+                            'display': 'inline-block',
+                        }
+                    ),
+                    dcc.Upload(
+                        id='upload-sectors-json',
+                        children=html.Button(
+                            '⬆ Importar desde JSON',
+                            style={
+                                'padding': '8px 16px',
+                                'background': 'rgba(255,255,255,0.08)',
+                                'color': TEXT,
+                                'border': f'1px solid {GRID}',
+                                'borderRadius': '4px',
+                                'cursor': 'pointer',
+                                'fontWeight': '600',
+                                'fontSize': '12px',
+                            }
+                        ),
+                        accept='.json',
+                        multiple=False,
+                    ),
+                ], style={'display': 'flex', 'gap': '10px', 'alignItems': 'center', 'flexWrap': 'wrap'}),
+                html.Div(id='sectors-import-feedback', style={'marginTop': '8px', 'minHeight': '18px', 'fontSize': '12px'}),
+            ], style={'background': CARD_BG, 'padding': '12px', 'borderRadius': '6px', 'border': f'1px solid {GRID}', 'marginTop': '16px'}),
         ]),
     ])
 
@@ -2807,16 +2897,11 @@ def main():
     parser.add_argument('--no-browser', action='store_true')
     args = parser.parse_args()
 
-    if not DB_PATH.exists():
-        print(f"ERROR: DB no encontrada en {DB_PATH}")
-        print("Ejecutá primero: python etl.py")
-        return
+    url = f"http://localhost:{args.port}"
 
-    print(f"\n  Portfolio Dashboard")
-    print(f"  URL  : http://localhost:{args.port}")
-    print(f"  DB   : {DB_PATH}")
-    print(f"  Ctrl+C para detener\n")
-    print(f"  Tableau 2026.2: Conectar → DuckDB → {DB_PATH}\n")
+    if not args.no_browser:
+        import threading, webbrowser
+        threading.Timer(2.5, lambda: webbrowser.open(url)).start()
 
     app.run(debug=False, port=args.port, host='127.0.0.1')
 

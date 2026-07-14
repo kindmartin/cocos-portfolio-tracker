@@ -14,10 +14,14 @@ import subprocess
 import threading
 from datetime import datetime
 
-# Detectar ruta base
-_base_dir = Path(__file__).parent
-if _base_dir.name == "code":
-    _base_dir = _base_dir.parent
+# Detectar ruta base (funciona en .exe y en script)
+import sys
+if getattr(sys, 'frozen', False):
+    _base_dir = Path(sys.executable).parent
+else:
+    _base_dir = Path(__file__).parent
+    if _base_dir.name == "code":
+        _base_dir = _base_dir.parent
 
 INGEST_DIR = _base_dir / "csv for ingest"
 LOGS_DIR = _base_dir / "data" / "ingest_logs"

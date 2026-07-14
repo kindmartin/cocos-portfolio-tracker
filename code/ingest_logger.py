@@ -6,10 +6,14 @@ from pathlib import Path
 from datetime import datetime
 from typing import Literal
 
-# Detectar ruta base
-_base_dir = Path(__file__).parent
-if _base_dir.name == "code":
-    _base_dir = _base_dir.parent
+# Detectar ruta base (funciona en .exe y en script)
+import sys
+if getattr(sys, 'frozen', False):
+    _base_dir = Path(sys.executable).parent
+else:
+    _base_dir = Path(__file__).parent
+    if _base_dir.name == "code":
+        _base_dir = _base_dir.parent
 
 LOGS_DIR = _base_dir / "data" / "ingest_logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)

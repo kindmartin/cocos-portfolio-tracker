@@ -9,9 +9,13 @@ from pathlib import Path
 import duckdb
 
 # Detectar ruta base (funciona en .exe y script)
-_base_dir = Path(__file__).parent
-if _base_dir.name == "code":
-    _base_dir = _base_dir.parent
+import sys
+if getattr(sys, 'frozen', False):
+    _base_dir = Path(sys.executable).parent
+else:
+    _base_dir = Path(__file__).parent
+    if _base_dir.name == "code":
+        _base_dir = _base_dir.parent
 
 DB_PATH = _base_dir / "data" / "db" / "portfolio.duckdb"
 

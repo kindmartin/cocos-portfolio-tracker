@@ -22,10 +22,14 @@ import duckdb
 from setup_db import DB_PATH, create_schema
 from ingest_logger import logger
 
-# Detectar ruta base
-_base_dir = Path(__file__).parent
-if _base_dir.name == "code":
-    _base_dir = _base_dir.parent
+# Detectar ruta base (funciona en .exe y en script)
+import sys
+if getattr(sys, 'frozen', False):
+    _base_dir = Path(sys.executable).parent
+else:
+    _base_dir = Path(__file__).parent
+    if _base_dir.name == "code":
+        _base_dir = _base_dir.parent
 
 # Rutas de entrada y salida
 INGEST_DIR = _base_dir / "csv for ingest"           # 📥 Nuevos CSVs para procesar

@@ -10,11 +10,12 @@ plotly_datas, plotly_binaries, plotly_hiddenimports = collect_all('plotly')
 duckdb_datas, duckdb_binaries, duckdb_hiddenimports = collect_all('duckdb')
 
 a = Analysis(
-    ['code\\portfolio_dashboard.py'],
+    ['cocos_launcher.py'],
     pathex=['e:\\Cocos Portfolio Tracker'],
     binaries=duckdb_binaries + dash_binaries + plotly_binaries,
     datas=[
         # App source files bundled into _MEIPASS
+        ('code\\portfolio_dashboard.py','.' ),
         ('code\\sectors.json',          '.'),
         ('code\\sector_manager.py',     '.'),
         ('code\\sector_api.py',         '.'),
@@ -23,6 +24,7 @@ a = Analysis(
         ('code\\ingest_logger.py',      '.'),
         ('code\\ingest_monitor.py',     '.'),
         ('code\\ingest_api.py',         '.'),
+        ('cocos.ico',                   '.'),
         # Empty DB — user's data lives next to the .exe
         ('data\\db\\portfolio.duckdb',  'data\\db'),
         # Package data
